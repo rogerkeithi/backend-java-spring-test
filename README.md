@@ -13,6 +13,9 @@ Desenvolver uma aplicação de gerenciamento de tarefas (todo list) com as segui
 3. **Autenticação e Autorização**:
    - Apenas usuários autenticados podem gerenciar suas próprias tarefas.
    - Implementar autenticação via JWT.
+   
+### Aplicação de Testes unitários
+   - O metodos devem ser testados com JUnit
 
 ## Requisitos Técnicos
 
@@ -29,7 +32,7 @@ Desenvolver uma aplicação de gerenciamento de tarefas (todo list) com as segui
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/backend-java-spring-boot-test.git
+   git clone https://github.com/ManagerThalles/backend-java-spring-test.git
    cd backend-java-spring-boot-test
 2. Siga as instruções no arquivo `requirements.md` para detalhes sobre a implementação.
 
@@ -57,8 +60,7 @@ Para facilitar a configuração do ambiente, você pode usar o script `setup.sh`
 
 O script irá verificar se você tem Java 11 e Maven instalados, instalar as dependências do Maven e iniciar a aplicação Spring Boot.
 
-
 ## Envio do Projeto
-O candidato deve enviar o link do repositório (GitHub, GitLab, etc.) contendo o código-fonte do projeto, junto com um arquivo README.md explicando como configurar e executar a aplicação.
+O candidato deve enviar o link do repositório (GitHub) contendo o código-fonte do projeto, junto com um arquivo README.md explicando como configurar e executar a aplicação.
 
 Boa sorte!
