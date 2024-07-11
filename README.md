@@ -31,7 +31,7 @@ Desenvolver uma aplicação de gerenciamento de tarefas (todo list) com as segui
    ```bash
    git clone https://github.com/seu-usuario/backend-java-spring-boot-test.git
    cd backend-java-spring-boot-test
-2. Siga as instruções no arquivo requirements.md para detalhes sobre a implementação.
+2. Siga as instruções no arquivo `requirements.md` para detalhes sobre a implementação.
 
 ## Envio do Projeto
 O candidato deve enviar o link do repositório (GitHub, GitLab, etc.) contendo o código-fonte do projeto, junto com um arquivo README.md explicando como configurar e executar a aplicação.
