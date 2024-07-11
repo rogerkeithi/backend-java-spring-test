@@ -6,13 +6,18 @@ Este repositório contém o teste prático para a vaga de Desenvolvedor Pleno Ba
 
 Desenvolver uma aplicação de gerenciamento de tarefas (todo list) com as seguintes funcionalidades:
 
-1. **Cadastro de Usuários**: O sistema deve permitir o cadastro e autenticação de usuários.
+1. **Cadastro de Usuários**:
+   - Criar, editar, excluir e listar usuários.
+   - Cada usuário deve ter um nome e nível (admin, user).
 2. **Gerenciamento de Tarefas**:
    - Criar, editar, excluir e listar tarefas.
-   - Cada tarefa deve ter um título, descrição, data de criação, data de vencimento, status (pendente, em andamento, concluída).
-3. **Autenticação e Autorização**:
-   - Apenas usuários autenticados podem gerenciar suas próprias tarefas.
-   - Implementar autenticação via JWT.
+   - Cada tarefa deve ter um título, descrição, data de criação, data de vencimento, status (pendente, em andamento, concluída) e um usuário associado.
+3. **Filtros e Ordenação**:
+   - Permitir que as tarefas sejam filtradas por status.
+   - Permitir que as tarefas sejam ordenadas por data de vencimento.
+4. **Associação de Tarefas a Usuários**
+   - Permitir que tarefas sejam atribuídas a usuários específicos.
+   - Permitir que as tarefas de um usuário específico sejam listadas.
    
 ### Aplicação de Testes unitários
    - O metodos devem ser testados com JUnit
