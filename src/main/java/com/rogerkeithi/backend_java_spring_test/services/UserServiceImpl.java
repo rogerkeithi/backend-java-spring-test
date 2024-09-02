@@ -70,12 +70,6 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-    }
-
-    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

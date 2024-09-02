@@ -10,6 +10,5 @@ public interface IUserService {
     User createUser(UserCreateDTO user) throws BadRequestException;
     User updateUser(Long id, UserUpdateDTO user);
     void deleteUser(Long id);
-    User getUserById(Long id);
     List<User> getAllUsers();
 }
