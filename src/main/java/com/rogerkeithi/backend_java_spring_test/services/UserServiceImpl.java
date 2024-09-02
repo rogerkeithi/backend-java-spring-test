@@ -23,7 +23,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User createUser(UserCreateDTO userCreateDTO) throws BadRequestException {
+    public User createUser(UserCreateDTO userCreateDTO){
         if (userCreateDTO.getUsername() == null || userCreateDTO.getUsername().trim().isEmpty()) {
             throw new BadRequestException("Username is required");
         }
