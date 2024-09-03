@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/*Configura o provedor de autenticação usando um serviço personalizado para
-carregar detalhes do usuário e um codificador de senha para verificar senhas*/
+/*Configure the authentication provider using a custom service to load user details and a password encoder to verify passwords.*/
 @Configuration
 public class AuthenticationProviderConfig {
 

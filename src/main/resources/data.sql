@@ -4,6 +4,7 @@ INSERT INTO TASK (TITLE, DESCRIPTION, DUE_DATE, STATUS, USER_ID, CREATED_AT) VAL
 ,('Tarefa 2', 'Esta é a segunda tarefa', '2024-09-06 16:45:32.123456', 'EM_ANDAMENTO', '1', CURRENT_TIMESTAMP())
 ,('Tarefa 3', 'Esta é a terceira tarefa', '2024-09-06 17:45:32.123456', 'CONCLUIDA', '1', CURRENT_TIMESTAMP())
 ,('Tarefa 4', 'Esta é a quarta tarefa', '2024-09-06 16:45:32.123456', 'CONCLUIDA', '2', CURRENT_TIMESTAMP());
+
 --admin
 --senha: 123
 

@@ -61,7 +61,7 @@
 
 4. **Documentação**:
    - 🚧 **README.md**: O projeto inclui um arquivo README.md com instruções claras sobre como configurar e rodar a aplicação?
-   - 🚧 **Documentação dos Endpoints**: Os endpoints estão documentados (por exemplo, usando Swagger ou outra ferramenta de documentação)?
+   - ✅ **Documentação dos Endpoints**: Os endpoints estão documentados (por exemplo, usando Swagger ou outra ferramenta de documentação)?
    - ✅ **Comentários no Código**: O código inclui comentários úteis que explicam partes complexas ou importantes da implementação?
 
 5. **FrontEnd**: 

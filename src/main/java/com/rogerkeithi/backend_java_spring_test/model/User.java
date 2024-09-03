@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-//Tive que manter o nome da tabela com underline pois "user" e "users" são palavras reservadas do H2
+//I had to keep the table name with an underscore because 'user' and 'users' are reserved words in H2.
 @Table(name = "_user")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private String nivel;
 
-    //Optei por adicionar password à entidade por conta do requisito "Listar todas as tarefas do usuário autenticado".
+    //I also chose to add a password to the entity due to the requirement 'List all tasks of the authenticated user'.
     @Column(nullable = false)
     private String password;
 

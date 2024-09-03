@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-//Este é o nosso codificador de senha para verifica-las
 @Component
 public class PasswordEncryptionUtil {
 

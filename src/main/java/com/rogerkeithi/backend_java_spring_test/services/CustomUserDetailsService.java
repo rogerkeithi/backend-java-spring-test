@@ -1,4 +1,5 @@
 package com.rogerkeithi.backend_java_spring_test.services;
+
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
@@ -7,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-//Este é o serviço personalizado que criamos para carregar as informações do usuário durante o processo de autenticação
+//This is the custom service we created to load user information during the authentication process.
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

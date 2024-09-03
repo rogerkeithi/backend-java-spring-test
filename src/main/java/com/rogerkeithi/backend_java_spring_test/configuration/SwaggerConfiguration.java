@@ -18,6 +18,7 @@ public class SwaggerConfiguration {
                 .info(new Info()
                         .title("Backend Java Spring Test")
                         .version("1.0.0")
+                        .description("You can login as a diferent user on 'Authorize' to test the 'Get user tasks' functionality and see the tasks related to the user authenticated")
                 )
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
