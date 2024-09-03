@@ -1,8 +1,8 @@
 package com.rogerkeithi.backend_java_spring_test.services;
 
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserCreateDTO;
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserGetAllDTO;
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserUpdateDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.CreateUserDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
@@ -46,28 +46,28 @@ class UserServiceImplTest {
 
         when(userRepository.findAll()).thenReturn(users);
 
-        List<UserGetAllDTO> expectedDtos = users.stream()
-                .map(user -> new UserGetAllDTO(user.getId(), user.getUsername(), user.getNivel()))
+        List<UserDTO> expectedDtos = users.stream()
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel()))
                 .collect(Collectors.toList());
 
-        List<UserGetAllDTO> actualDtos = userService.getAllUsers();
+        List<UserDTO> actualDtos = userService.getAllUsers();
 
         assertEquals(expectedDtos, actualDtos);
     }
 
     @Test
     public void createUser_Success() {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setUsername("testuser");
-        userCreateDTO.setNivel("admin");
-        userCreateDTO.setPassword("decryptedPassword");
+        CreateUserDTO createUserDTO = new CreateUserDTO();
+        createUserDTO.setUsername("testuser");
+        createUserDTO.setNivel("admin");
+        createUserDTO.setPassword("decryptedPassword");
         String encryptedPassword = "encryptedPassword";
 
-        when(passwordEncryptionUtil.encryptPassword(userCreateDTO.getPassword())).thenReturn(encryptedPassword);
+        when(passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword())).thenReturn(encryptedPassword);
         when(userRepository.findByUsername("testuser")).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
-        User createdUser = userService.createUser(userCreateDTO);
+        User createdUser = userService.createUser(createUserDTO);
 
         assertNotNull(createdUser);
         assertEquals("testuser", createdUser.getUsername());
@@ -78,54 +78,54 @@ class UserServiceImplTest {
 
     @Test
     void createUser_shouldThrowBadRequestException_whenUsernameIsNullOrEmpty() {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setUsername(null);
-        userCreateDTO.setNivel("admin");
-        userCreateDTO.setPassword("password");
+        CreateUserDTO createUserDTO = new CreateUserDTO();
+        createUserDTO.setUsername(null);
+        createUserDTO.setNivel("admin");
+        createUserDTO.setPassword("password");
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(userCreateDTO));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Username is required", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void createUser_shouldThrowBadRequestException_whenNivelIsNullOrEmpty() {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setUsername("testuser");
-        userCreateDTO.setNivel(null);
-        userCreateDTO.setPassword("password");
+        CreateUserDTO createUserDTO = new CreateUserDTO();
+        createUserDTO.setUsername("testuser");
+        createUserDTO.setNivel(null);
+        createUserDTO.setPassword("password");
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(userCreateDTO));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Nivel is required", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void createUser_shouldThrowBadRequestException_whenPasswordIsNullOrEmpty() {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setUsername("testuser");
-        userCreateDTO.setNivel("admin");
-        userCreateDTO.setPassword(null);
+        CreateUserDTO createUserDTO = new CreateUserDTO();
+        createUserDTO.setUsername("testuser");
+        createUserDTO.setNivel("admin");
+        createUserDTO.setPassword(null);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(userCreateDTO));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Password is required", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void createUser_shouldThrowBadRequestException_whenUsernameAlreadyExists() {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setUsername("testuser");
-        userCreateDTO.setNivel("admin");
-        userCreateDTO.setPassword("password");
+        CreateUserDTO createUserDTO = new CreateUserDTO();
+        createUserDTO.setUsername("testuser");
+        createUserDTO.setNivel("admin");
+        createUserDTO.setPassword("password");
 
         User existingUser = new User();
         existingUser.setUsername("testuser");
 
-        when(userRepository.findByUsername(userCreateDTO.getUsername())).thenReturn(existingUser);
+        when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(existingUser);
         when(passwordEncryptionUtil.encryptPassword("password")).thenReturn("encryptedPassword");
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(userCreateDTO));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Username already exists", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
@@ -134,16 +134,16 @@ class UserServiceImplTest {
     public void updateUser_Success() {
         Long userId = 1L;
         User existingUser = new User(userId, "old_username", "old_nivel", "old_password");
-        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-        userUpdateDTO.setUsername("new_username");
-        userUpdateDTO.setNivel("new_nivel");
-        userUpdateDTO.setPassword("new_password");
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+        updateUserDTO.setUsername("new_username");
+        updateUserDTO.setNivel("new_nivel");
+        updateUserDTO.setPassword("new_password");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(passwordEncryptionUtil.encryptPassword("new_password")).thenReturn("encrypted_password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User updatedUser = userService.updateUser(userId, userUpdateDTO);
+        User updatedUser = userService.updateUser(userId, updateUserDTO);
 
         assertEquals("new_username", updatedUser.getUsername());
         assertEquals("new_nivel", updatedUser.getNivel());
@@ -157,11 +157,11 @@ class UserServiceImplTest {
     @Test
     void updateUser_shouldThrowNotFoundException_UserNotFound() {
         Long userId = 1L;
-        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> userService.updateUser(userId, userUpdateDTO));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> userService.updateUser(userId, updateUserDTO));
 
         assertEquals("User not found", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));

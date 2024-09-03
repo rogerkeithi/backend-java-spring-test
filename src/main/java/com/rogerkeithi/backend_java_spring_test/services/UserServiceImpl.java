@@ -1,8 +1,8 @@
 package com.rogerkeithi.backend_java_spring_test.services;
 
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserCreateDTO;
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserGetAllDTO;
-import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserUpdateDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.CreateUserDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.model.User;
@@ -28,45 +28,45 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User createUser(UserCreateDTO userCreateDTO){
-        String encryptedPassword = passwordEncryptionUtil.encryptPassword(userCreateDTO.getPassword());
+    public User createUser(CreateUserDTO createUserDTO){
+        String encryptedPassword = passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword());
 
-        if (userCreateDTO.getUsername() == null || userCreateDTO.getUsername().trim().isEmpty()) {
+        if (createUserDTO.getUsername() == null || createUserDTO.getUsername().trim().isEmpty()) {
             throw new BadRequestException("Username is required");
         }
-        if (userCreateDTO.getNivel() == null || userCreateDTO.getNivel().trim().isEmpty()) {
+        if (createUserDTO.getNivel() == null || createUserDTO.getNivel().trim().isEmpty()) {
             throw new BadRequestException("Nivel is required");
         }
         if (encryptedPassword == null || encryptedPassword.trim().isEmpty()) {
             throw new BadRequestException("Password is required");
         }
 
-        User userFound = userRepository.findByUsername(userCreateDTO.getUsername());
+        User userFound = userRepository.findByUsername(createUserDTO.getUsername());
 
         if (userFound != null) {
             throw new BadRequestException("Username already exists");
         }
 
         User user = new User();
-        user.setUsername(userCreateDTO.getUsername());
-        user.setNivel(userCreateDTO.getNivel());
+        user.setUsername(createUserDTO.getUsername());
+        user.setNivel(createUserDTO.getNivel());
         user.setPassword(encryptedPassword);
 
         return userRepository.save(user);
     }
 
     @Override
-    public User updateUser(Long id, UserUpdateDTO userUpdateDTO) {
+    public User updateUser(Long id, UpdateUserDTO updateUserDTO) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        if (userUpdateDTO.getNivel() != null && !userUpdateDTO.getNivel().trim().isEmpty()) {
-            existingUser.setNivel(userUpdateDTO.getNivel());
+        if (updateUserDTO.getNivel() != null && !updateUserDTO.getNivel().trim().isEmpty()) {
+            existingUser.setNivel(updateUserDTO.getNivel());
         }
-        if (userUpdateDTO.getUsername() != null && !userUpdateDTO.getUsername().trim().isEmpty()) {
-            existingUser.setUsername(userUpdateDTO.getUsername());
+        if (updateUserDTO.getUsername() != null && !updateUserDTO.getUsername().trim().isEmpty()) {
+            existingUser.setUsername(updateUserDTO.getUsername());
         }
-        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().trim().isEmpty()) {
-            String encryptedPassword = passwordEncryptionUtil.encryptPassword(userUpdateDTO.getPassword());
+        if (updateUserDTO.getPassword() != null && !updateUserDTO.getPassword().trim().isEmpty()) {
+            String encryptedPassword = passwordEncryptionUtil.encryptPassword(updateUserDTO.getPassword());
             existingUser.setPassword(encryptedPassword);
         }
         return userRepository.save(existingUser);
@@ -84,10 +84,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<UserGetAllDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(user -> new UserGetAllDTO(user.getId(), user.getUsername(), user.getNivel()))
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,14 +1,12 @@
 package com.rogerkeithi.backend_java_spring_test.DTO.UserDTO;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class UserGetAllDTO {
-    private Long id;
+public class CreateUserDTO {
     private String username;
     private String nivel;
+    private String password;
 }
