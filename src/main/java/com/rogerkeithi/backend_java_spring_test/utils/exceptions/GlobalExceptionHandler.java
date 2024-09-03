@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+//Intercepta as exceções para tratamento das mesmas, configurei para que retornassem a mensagem de erro
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

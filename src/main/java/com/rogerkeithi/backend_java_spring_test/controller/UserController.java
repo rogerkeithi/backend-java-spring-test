@@ -1,8 +1,8 @@
 package com.rogerkeithi.backend_java_spring_test.controller;
 
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserCreateDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserGetAllDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserUpdateDTO;
-import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserGetAllDTO>> getAllUsers() {
+        List<UserGetAllDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserCreateDTO user) throws BadRequestException {
+    public ResponseEntity<User> createUser(@RequestBody UserCreateDTO user) {
         User createdUser = userService.createUser(user);
         return ResponseEntity.ok(createdUser);
     }

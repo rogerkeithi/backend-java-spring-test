@@ -13,7 +13,7 @@ public class SwaggerConfiguration {
         return GroupedOpenApi.builder()
                 .group("public")
                 .pathsToMatch("/api/**")
-                .pathsToExclude("/") // Exclude specific paths
+                .pathsToExclude("/")
                 .build();
     }
 }
