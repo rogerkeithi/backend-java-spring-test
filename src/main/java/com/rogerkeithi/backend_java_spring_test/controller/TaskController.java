@@ -22,8 +22,10 @@ public class TaskController {
     }
 
     @Operation(
-            summary = "Get user tasks",
-            description = "Get all tasks from the user authenticated"
+            summary = "Get user authenticated tasks",
+            description = "Get all tasks from the user authenticated <br><br>" +
+                    " status can only have 3 types: <br> <b>PENDENTE, EM_ANDAMENTO and CONCLUIDA </b> " +
+                    "<br><br> sort can only have <b>dueDate</b> as a value"
     )
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getUserTasks(
@@ -36,7 +38,8 @@ public class TaskController {
 
     @Operation(
             summary = "Create task",
-            description = "Create a new task"
+            description = "Create a new task <br><br> status can only have 3 types:" +
+                    "<br><b>PENDENTE, EM_ANDAMENTO and CONCLUIDA </b>"
     )
     @PostMapping
     public ResponseEntity<TaskDTO> createTask(@RequestBody CreateTaskDTO task) {
@@ -56,7 +59,8 @@ public class TaskController {
 
     @Operation(
             summary = "Update task",
-            description = "Update a task using her id as a parameter"
+            description = "Update a task using her id as a parameter  <br><br>" +
+                    "status can only have 3 types: <br> <b>PENDENTE, EM_ANDAMENTO and CONCLUIDA </b>"
     )
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO task) {
