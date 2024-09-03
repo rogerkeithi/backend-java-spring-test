@@ -4,7 +4,6 @@ import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.CreateTaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.UpdateTaskDTO;
 import com.rogerkeithi.backend_java_spring_test.services.interfaces.ITaskService;
-import com.rogerkeithi.backend_java_spring_test.utils.enums.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getUserTasks(
-            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) String sort
     ) {
         List<TaskDTO> tasks = taskService.getSelfUserTasks(status, sort);

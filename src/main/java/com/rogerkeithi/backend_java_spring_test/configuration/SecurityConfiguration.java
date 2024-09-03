@@ -4,7 +4,6 @@ import com.rogerkeithi.backend_java_spring_test.services.CustomUserDetailsServic
 import lombok.Getter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,9 +35,7 @@ public class SecurityConfiguration {
                                 antMatcher("/swagger-ui.html"),
                                 antMatcher("/v3/**"),
                                 antMatcher("/h2-console/**"))
-                        .permitAll()
-                        .requestMatchers(antMatcher(HttpMethod.GET, "/home"))
-                        .permitAll()
+                        .authenticated()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .httpBasic(Customizer.withDefaults())

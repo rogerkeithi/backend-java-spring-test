@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 @Service
 public class TaskServiceImpl implements ITaskService {
     private final TaskRepository taskRepository;
-    private final SecurityUtil securityUtil;
     private final UserRepository userRepository;
+    private final SecurityUtil securityUtil;
     private final ValidationUtil validationUtil;
 
     @Autowired
@@ -39,15 +39,15 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public List<TaskDTO> getSelfUserTasks(TaskStatus status, String sort) {
+    public List<TaskDTO> getSelfUserTasks(String status, String sort) {
         String username = securityUtil.getCurrentUsername();
         List<Task> tasks = taskRepository.findAllByUsername(username);
 
         Stream<Task> taskStream = tasks.stream();
 
         if (status != null) {
-            validationUtil.requireValidEnum(TaskStatus.class, status.name(),"Invalid status value");
-            taskStream = taskStream.filter(task -> task.getStatus() == status);
+            validationUtil.requireValidEnum(TaskStatus.class, status,"Invalid status value");
+            taskStream = taskStream.filter(task -> task.getStatus() == TaskStatus.valueOf(status));
         }
 
         if (sort != null && !sort.isEmpty() && !"dueDate".equalsIgnoreCase(sort)) {

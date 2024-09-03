@@ -43,7 +43,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void getAllUsers_Success() {
+    void testGetAllUsers_Success() {
         User user1 = new User(1L, "testuser1", "admin", "123");
         User user2 = new User(2L, "testuser2", "user", "456");
         List<User> users = Arrays.asList(user1, user2);
@@ -60,7 +60,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void createUser_Success() {
+    void testCreateUser_Success() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
         createUserDTO.setNivel("admin");
@@ -90,7 +90,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldThrowBadRequestException_whenUsernameIsNullOrEmpty() {
+    void testCreateUser_shouldThrowBadRequestException_whenUsernameIsNullOrEmpty() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername(null);
         createUserDTO.setNivel("admin");
@@ -105,7 +105,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldThrowBadRequestException_whenNivelIsNullOrEmpty() {
+    void testCreateUser_shouldThrowBadRequestException_whenNivelIsNullOrEmpty() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
         createUserDTO.setNivel(null);
@@ -120,7 +120,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldThrowBadRequestException_whenPasswordIsNullOrEmpty() {
+    void testCreateUser_shouldThrowBadRequestException_whenPasswordIsNullOrEmpty() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
         createUserDTO.setNivel("admin");
@@ -135,7 +135,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser_shouldThrowBadRequestException_whenUsernameAlreadyExists() {
+    void testCreateUser_shouldThrowBadRequestException_whenUsernameAlreadyExists() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
         createUserDTO.setNivel("admin");
@@ -153,7 +153,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void updateUser_Success() {
+    void testUpdateUser_Success() {
         Long userId = 1L;
         User existingUser = new User(userId, "old_username", "old_nivel", "old_password");
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
@@ -176,7 +176,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser_shouldThrowNotFoundException_UserNotFound() {
+    void testUpdateUser_shouldThrowNotFoundException_UserNotFound() {
         Long userId = 1L;
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
 
@@ -189,7 +189,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void deleteUser_Success() {
+    void testDeleteUser_Success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(new User()));
 
         userService.deleteUser(1L);
@@ -198,7 +198,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser_shouldThrowNotFoundException_UserNotFound() {
+    void testDeleteUser_shouldThrowNotFoundException_UserNotFound() {
         Long userId = 1L;
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());

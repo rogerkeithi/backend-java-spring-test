@@ -20,4 +20,8 @@ public class SecurityUtil {
             return principal.toString();
         }
     }
+    public void clearAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContextHolder.clearContext();
+    }
 }
