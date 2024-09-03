@@ -55,8 +55,8 @@
    - ✅ **Manutenibilidade**: O código é fácil de manter e expandir? Existe modularização adequada?
 
 3. **Testes**:
-   - 🚧 **Cobertura de Testes**: Os testes cobrem uma parte significativa da aplicação (especialmente as funcionalidades principais)?
-   - 🚧 **Qualidade dos Testes**: Os testes são bem escritos, claros e bem organizados? Utilizam boas práticas de testes unitários e de integração?
+   - ✅ **Cobertura de Testes**: Os testes cobrem uma parte significativa da aplicação (especialmente as funcionalidades principais)?
+   - ✅ **Qualidade dos Testes**: Os testes são bem escritos, claros e bem organizados? Utilizam boas práticas de testes unitários e de integração?
    - ✅ **Automatização**: Existe alguma forma de execução automatizada dos testes, como scripts ou configuração de CI/CD?
 
 4. **Documentação**:
