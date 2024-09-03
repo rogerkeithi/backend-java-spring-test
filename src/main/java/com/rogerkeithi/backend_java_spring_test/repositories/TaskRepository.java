@@ -10,4 +10,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE t._user.username = :username")
     List<Task> findAllByUsername(@Param("username") String username);
+
+    @Query("SELECT t FROM Task t WHERE t._user.id = :userId")
+    List<Task> findByUser_Id(Long userId);
 }

@@ -6,6 +6,7 @@ import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
+import com.rogerkeithi.backend_java_spring_test.utils.ValidationUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,9 @@ class UserServiceImplTest {
 
     @Mock
     private PasswordEncryptionUtil passwordEncryptionUtil;
+
+    @Mock
+    private ValidationUtil validationUtil;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -64,15 +68,24 @@ class UserServiceImplTest {
         String encryptedPassword = "encryptedPassword";
 
         when(passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword())).thenReturn(encryptedPassword);
-        when(userRepository.findByUsername("testuser")).thenReturn(null);
+
+        doNothing().when(validationUtil).requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
+        doNothing().when(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        doNothing().when(validationUtil).requireStringNonEmpty(encryptedPassword, "Password is required");
+
+        when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArguments()[0]);
 
-        User createdUser = userService.createUser(createUserDTO);
+        UserDTO createdUser = userService.createUser(createUserDTO);
 
         assertNotNull(createdUser);
         assertEquals("testuser", createdUser.getUsername());
         assertEquals("admin", createdUser.getNivel());
-        assertEquals(encryptedPassword, createdUser.getPassword());
+        verify(passwordEncryptionUtil).encryptPassword(createUserDTO.getPassword());
+        verify(validationUtil).requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
+        verify(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        verify(validationUtil).requireStringNonEmpty(encryptedPassword, "Password is required");
+        verify(userRepository).findByUsername(createUserDTO.getUsername());
         verify(userRepository).save(any(User.class));
     }
 
@@ -82,6 +95,9 @@ class UserServiceImplTest {
         createUserDTO.setUsername(null);
         createUserDTO.setNivel("admin");
         createUserDTO.setPassword("password");
+
+        doThrow(new BadRequestException("Username is required"))
+                .when(validationUtil).requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Username is required", exception.getMessage());
@@ -95,6 +111,9 @@ class UserServiceImplTest {
         createUserDTO.setNivel(null);
         createUserDTO.setPassword("password");
 
+        doThrow(new BadRequestException("Nivel is required"))
+                .when(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Nivel is required", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
@@ -106,6 +125,9 @@ class UserServiceImplTest {
         createUserDTO.setUsername("testuser");
         createUserDTO.setNivel("admin");
         createUserDTO.setPassword(null);
+
+        doThrow(new BadRequestException("Password is required"))
+                .when(validationUtil).requireStringNonEmpty(createUserDTO.getPassword(), "Password is required");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Password is required", exception.getMessage());
@@ -123,7 +145,7 @@ class UserServiceImplTest {
         existingUser.setUsername("testuser");
 
         when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(existingUser);
-        when(passwordEncryptionUtil.encryptPassword("password")).thenReturn("encryptedPassword");
+        when(passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword())).thenReturn("encryptedPassword");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
         assertEquals("Username already exists", exception.getMessage());
@@ -143,11 +165,10 @@ class UserServiceImplTest {
         when(passwordEncryptionUtil.encryptPassword("new_password")).thenReturn("encrypted_password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User updatedUser = userService.updateUser(userId, updateUserDTO);
+        UserDTO updatedUser = userService.updateUser(userId, updateUserDTO);
 
         assertEquals("new_username", updatedUser.getUsername());
         assertEquals("new_nivel", updatedUser.getNivel());
-        assertEquals("encrypted_password", updatedUser.getPassword());
 
         verify(userRepository).findById(userId);
         verify(passwordEncryptionUtil).encryptPassword("new_password");

@@ -1,15 +1,13 @@
 package com.rogerkeithi.backend_java_spring_test.controller;
 
+import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.CreateTaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
-import com.rogerkeithi.backend_java_spring_test.model.Task;
+import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.UpdateTaskDTO;
 import com.rogerkeithi.backend_java_spring_test.services.interfaces.ITaskService;
 import com.rogerkeithi.backend_java_spring_test.utils.enums.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +26,25 @@ public class TaskController {
             @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) String sort
     ) {
-        List<TaskDTO> tasks = taskService.getUserTasks(status, sort);
+        List<TaskDTO> tasks = taskService.getSelfUserTasks(status, sort);
         return ResponseEntity.ok(tasks);
+    }
+
+    @PostMapping
+    public ResponseEntity<TaskDTO> createTask(@RequestBody CreateTaskDTO task) {
+        TaskDTO createdTask = taskService.createTask(task);
+        return ResponseEntity.ok(createdTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskDTO task) {
+        TaskDTO updateTask = taskService.updateTask(id, task);
+        return ResponseEntity.ok(updateTask);
     }
 }

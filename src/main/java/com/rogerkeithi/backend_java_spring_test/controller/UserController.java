@@ -1,9 +1,10 @@
 package com.rogerkeithi.backend_java_spring_test.controller;
 
+import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.CreateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
-import com.rogerkeithi.backend_java_spring_test.model.User;
+import com.rogerkeithi.backend_java_spring_test.services.interfaces.ITaskService;
 import com.rogerkeithi.backend_java_spring_test.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final IUserService userService;
+    private final ITaskService taskService;
 
     @Autowired
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, ITaskService taskService) {
         this.userService = userService;
+        this.taskService = taskService;
     }
 
     @GetMapping
@@ -28,14 +31,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserDTO user) {
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO user) {
+        UserDTO createdUser = userService.createUser(user);
         return ResponseEntity.ok(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO user) {
-        User updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO user) {
+        UserDTO updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -43,6 +46,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<List<TaskDTO>> getUserTasks(@PathVariable Long id) {
+        List<TaskDTO> tasks = taskService.getAllUserTasks(id);
+        return ResponseEntity.ok(tasks);
     }
 
 }

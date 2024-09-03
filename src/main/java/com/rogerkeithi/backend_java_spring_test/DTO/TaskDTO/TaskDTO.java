@@ -5,7 +5,6 @@ import com.rogerkeithi.backend_java_spring_test.utils.enums.TaskStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter

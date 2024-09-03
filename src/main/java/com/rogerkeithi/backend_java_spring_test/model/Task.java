@@ -1,5 +1,7 @@
 package com.rogerkeithi.backend_java_spring_test.model;
 
+import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
+import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
 import com.rogerkeithi.backend_java_spring_test.utils.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,4 +39,21 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User _user;
+
+    public static TaskDTO toDTO(Task task) {
+        if (task == null) {
+            return null;
+        }
+        UserDTO userDTO = User.toDTO(task.get_user());
+
+        return new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getDueDate(),
+                task.getCreatedAt(),
+                userDTO
+        );
+    }
 }

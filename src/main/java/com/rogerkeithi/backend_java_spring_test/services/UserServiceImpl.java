@@ -4,6 +4,7 @@ import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.CreateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
+import com.rogerkeithi.backend_java_spring_test.utils.ValidationUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
@@ -20,26 +21,22 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncryptionUtil passwordEncryptionUtil;
+    private final ValidationUtil validationUtil;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncryptionUtil passwordEncryptionUtil) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncryptionUtil passwordEncryptionUtil, ValidationUtil validationUtil) {
         this.userRepository = userRepository;
         this.passwordEncryptionUtil = passwordEncryptionUtil;
+        this.validationUtil = validationUtil;
     }
 
     @Override
-    public User createUser(CreateUserDTO createUserDTO){
+    public UserDTO createUser(CreateUserDTO createUserDTO){
         String encryptedPassword = passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword());
 
-        if (createUserDTO.getUsername() == null || createUserDTO.getUsername().trim().isEmpty()) {
-            throw new BadRequestException("Username is required");
-        }
-        if (createUserDTO.getNivel() == null || createUserDTO.getNivel().trim().isEmpty()) {
-            throw new BadRequestException("Nivel is required");
-        }
-        if (encryptedPassword == null || encryptedPassword.trim().isEmpty()) {
-            throw new BadRequestException("Password is required");
-        }
+        validationUtil.requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
+        validationUtil.requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        validationUtil.requireStringNonEmpty(encryptedPassword, "Password is required");
 
         User userFound = userRepository.findByUsername(createUserDTO.getUsername());
 
@@ -51,25 +48,30 @@ public class UserServiceImpl implements IUserService {
         user.setUsername(createUserDTO.getUsername());
         user.setNivel(createUserDTO.getNivel());
         user.setPassword(encryptedPassword);
+        userRepository.save(user);
 
-        return userRepository.save(user);
+        return User.toDTO(user);
     }
 
     @Override
-    public User updateUser(Long id, UpdateUserDTO updateUserDTO) {
-        User existingUser = userRepository.findById(id)
+    public UserDTO updateUser(Long id, UpdateUserDTO updateUserDTO) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+
         if (updateUserDTO.getNivel() != null && !updateUserDTO.getNivel().trim().isEmpty()) {
-            existingUser.setNivel(updateUserDTO.getNivel());
+            user.setNivel(updateUserDTO.getNivel());
         }
         if (updateUserDTO.getUsername() != null && !updateUserDTO.getUsername().trim().isEmpty()) {
-            existingUser.setUsername(updateUserDTO.getUsername());
+            user.setUsername(updateUserDTO.getUsername());
         }
         if (updateUserDTO.getPassword() != null && !updateUserDTO.getPassword().trim().isEmpty()) {
             String encryptedPassword = passwordEncryptionUtil.encryptPassword(updateUserDTO.getPassword());
-            existingUser.setPassword(encryptedPassword);
+            user.setPassword(encryptedPassword);
         }
-        return userRepository.save(existingUser);
+
+        userRepository.save(user);
+
+        return User.toDTO(user);
     }
 
     @Override
