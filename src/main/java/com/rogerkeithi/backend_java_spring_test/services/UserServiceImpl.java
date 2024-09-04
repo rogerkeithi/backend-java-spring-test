@@ -5,6 +5,7 @@ import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.ValidationUtil;
+import com.rogerkeithi.backend_java_spring_test.utils.enums.UserNivel;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
@@ -32,10 +33,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO createUser(CreateUserDTO createUserDTO){
+        String userNivel = createUserDTO.getNivel().toUpperCase();
         String encryptedPassword = passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword());
 
         validationUtil.requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
-        validationUtil.requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        validationUtil.requireValidEnum(UserNivel.class, userNivel,"Invalid Nivel value");
         validationUtil.requireStringNonEmpty(encryptedPassword, "Password is required");
 
         User userFound = userRepository.findByUsername(createUserDTO.getUsername());
@@ -46,7 +48,7 @@ public class UserServiceImpl implements IUserService {
 
         User user = new User();
         user.setUsername(createUserDTO.getUsername());
-        user.setNivel(createUserDTO.getNivel());
+        user.setNivel(UserNivel.valueOf(userNivel));
         user.setPassword(encryptedPassword);
         userRepository.save(user);
 
@@ -55,11 +57,13 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO updateUser(Long id, UpdateUserDTO updateUserDTO) {
+        String userNivel = updateUserDTO.getNivel().toUpperCase();
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (updateUserDTO.getNivel() != null && !updateUserDTO.getNivel().trim().isEmpty()) {
-            user.setNivel(updateUserDTO.getNivel());
+            validationUtil.requireValidEnum(UserNivel.class, userNivel,"Invalid Nivel value");
+            user.setNivel(UserNivel.valueOf(userNivel));
         }
         if (updateUserDTO.getUsername() != null && !updateUserDTO.getUsername().trim().isEmpty()) {
             user.setUsername(updateUserDTO.getUsername());
@@ -89,7 +93,7 @@ public class UserServiceImpl implements IUserService {
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel()))
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel().name()))
                 .collect(Collectors.toList());
     }
 }

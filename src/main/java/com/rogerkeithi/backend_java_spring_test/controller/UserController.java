@@ -37,7 +37,8 @@ public class UserController {
 
     @Operation(
             summary = "Create user",
-            description = "Create a new user"
+            description = "Create a new user <br><br>" +
+                    "nivel can only have 2 values: <br> <b>ADMIN or USER </b>"
     )
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO user) {
@@ -47,7 +48,8 @@ public class UserController {
 
     @Operation(
             summary = "Update user",
-            description = "Update user informations using her id as a parameter"
+            description = "Update user informations using her id as a parameter <br><br>" +
+                    "nivel can only have 2 values: <br> <b>ADMIN or USER </b>"
     )
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO user) {

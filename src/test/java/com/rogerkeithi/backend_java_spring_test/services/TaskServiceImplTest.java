@@ -10,6 +10,7 @@ import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
 import com.rogerkeithi.backend_java_spring_test.utils.SecurityUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.ValidationUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.enums.TaskStatus;
+import com.rogerkeithi.backend_java_spring_test.utils.enums.UserNivel;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +54,7 @@ public class TaskServiceImplTest {
         String username = "testUser";
         String sort = "dueDate";
         String status = "CONCLUIDA";
-        User mockedUser = new User(1L, "testuser1", "admin", "123");
+        User mockedUser = new User(1L, "testuser1", UserNivel.ADMIN, "123");
         LocalDateTime mockedDate = LocalDateTime.now();
 
         when(securityUtil.getCurrentUsername()).thenReturn(username);
@@ -127,6 +128,7 @@ public class TaskServiceImplTest {
         Long userId = 1L;
         LocalDateTime mockedDate = LocalDateTime.now();
         User user = new User();
+        user.setNivel(UserNivel.USER);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         List<Task> tasks = List.of(
@@ -199,6 +201,7 @@ public class TaskServiceImplTest {
         createTaskDTO.setDueDate(LocalDateTime.of(2024, 1, 1, 12, 0));
 
         User user = new User();
+        user.setNivel(UserNivel.USER);
         user.setId(1L);
 
         doNothing().when(validationUtil).requireStringNonEmpty(createTaskDTO.getTitle(), "Title is required");
@@ -237,6 +240,7 @@ public class TaskServiceImplTest {
     @SuppressWarnings("unchecked")
     void testCreateTask_shouldThrowNotFoundException_UserNotFound() {
         CreateTaskDTO createTaskDTO = new CreateTaskDTO();
+        createTaskDTO.setStatus("PENDENTE");
         createTaskDTO.setUser_id(1L);
 
         doNothing().when(validationUtil).requireStringNonEmpty(anyString(), anyString());
@@ -256,6 +260,7 @@ public class TaskServiceImplTest {
     @Test
     void testCreateTask_shouldThrowBadRequestException_TitleIsEmpty() {
         CreateTaskDTO createTaskDTO = new CreateTaskDTO();
+        createTaskDTO.setStatus("PENDENTE");
         createTaskDTO.setTitle("");
 
         doThrow(new BadRequestException("Title is required"))
@@ -274,6 +279,7 @@ public class TaskServiceImplTest {
     @Test
     void testCreateTask_shouldThrowBadRequestException_DescriptionIsEmpty() {
         CreateTaskDTO createTaskDTO = new CreateTaskDTO();
+        createTaskDTO.setStatus("PENDENTE");
         createTaskDTO.setDescription("");
 
         doThrow(new BadRequestException("Description is required"))
@@ -323,6 +329,7 @@ public class TaskServiceImplTest {
         existingTask.setStatus(TaskStatus.EM_ANDAMENTO);
 
         User existingUser = new User();
+        existingUser.setNivel(UserNivel.USER);
         existingUser.setId(2L);
 
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
@@ -347,6 +354,7 @@ public class TaskServiceImplTest {
     void testUpdateTask_shouldThrowNotFoundException_TaskNotFound() {
         Long taskId = 1L;
         UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO();
+        updateTaskDTO.setStatus("PENDENTE");
 
         when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
@@ -364,6 +372,7 @@ public class TaskServiceImplTest {
         Long taskId = 1L;
         UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO();
         updateTaskDTO.setUser_id(2L);
+        updateTaskDTO.setStatus("PENDENTE");
 
         Task existingTask = new Task();
         existingTask.setId(taskId);

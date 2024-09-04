@@ -7,6 +7,7 @@ import com.rogerkeithi.backend_java_spring_test.model.User;
 import com.rogerkeithi.backend_java_spring_test.repositories.UserRepository;
 import com.rogerkeithi.backend_java_spring_test.utils.PasswordEncryptionUtil;
 import com.rogerkeithi.backend_java_spring_test.utils.ValidationUtil;
+import com.rogerkeithi.backend_java_spring_test.utils.enums.UserNivel;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.BadRequestException;
 import com.rogerkeithi.backend_java_spring_test.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,14 +45,14 @@ class UserServiceImplTest {
 
     @Test
     void testGetAllUsers_Success() {
-        User user1 = new User(1L, "testuser1", "admin", "123");
-        User user2 = new User(2L, "testuser2", "user", "456");
+        User user1 = new User(1L, "testuser1", UserNivel.ADMIN, "123");
+        User user2 = new User(2L, "testuser2", UserNivel.USER, "456");
         List<User> users = Arrays.asList(user1, user2);
 
         when(userRepository.findAll()).thenReturn(users);
 
         List<UserDTO> expectedDtos = users.stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel()))
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getNivel().name()))
                 .collect(Collectors.toList());
 
         List<UserDTO> actualDtos = userService.getAllUsers();
@@ -63,14 +64,14 @@ class UserServiceImplTest {
     void testCreateUser_Success() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
-        createUserDTO.setNivel("admin");
+        createUserDTO.setNivel("ADMIN");
         createUserDTO.setPassword("decryptedPassword");
         String encryptedPassword = "encryptedPassword";
 
         when(passwordEncryptionUtil.encryptPassword(createUserDTO.getPassword())).thenReturn(encryptedPassword);
 
         doNothing().when(validationUtil).requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
-        doNothing().when(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        doNothing().when(validationUtil).requireValidEnum(UserNivel.class, createUserDTO.getNivel(), "Invalid Nivel value");
         doNothing().when(validationUtil).requireStringNonEmpty(encryptedPassword, "Password is required");
 
         when(userRepository.findByUsername(createUserDTO.getUsername())).thenReturn(null);
@@ -80,10 +81,11 @@ class UserServiceImplTest {
 
         assertNotNull(createdUser);
         assertEquals("testuser", createdUser.getUsername());
-        assertEquals("admin", createdUser.getNivel());
+        assertEquals(UserNivel.ADMIN.name(), createdUser.getNivel());
+
         verify(passwordEncryptionUtil).encryptPassword(createUserDTO.getPassword());
         verify(validationUtil).requireStringNonEmpty(createUserDTO.getUsername(), "Username is required");
-        verify(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        verify(validationUtil).requireValidEnum(UserNivel.class, createUserDTO.getNivel(), "Invalid Nivel value");
         verify(validationUtil).requireStringNonEmpty(encryptedPassword, "Password is required");
         verify(userRepository).findByUsername(createUserDTO.getUsername());
         verify(userRepository).save(any(User.class));
@@ -93,7 +95,7 @@ class UserServiceImplTest {
     void testCreateUser_shouldThrowBadRequestException_whenUsernameIsNullOrEmpty() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername(null);
-        createUserDTO.setNivel("admin");
+        createUserDTO.setNivel("ADMIN");
         createUserDTO.setPassword("password");
 
         doThrow(new BadRequestException("Username is required"))
@@ -105,17 +107,17 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateUser_shouldThrowBadRequestException_whenNivelIsNullOrEmpty() {
+    void testCreateUser_shouldThrowBadRequestException_whenNivelIsInvalid() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
-        createUserDTO.setNivel(null);
+        createUserDTO.setNivel("NOT_VALID");
         createUserDTO.setPassword("password");
 
-        doThrow(new BadRequestException("Nivel is required"))
-                .when(validationUtil).requireStringNonEmpty(createUserDTO.getNivel(), "Nivel is required");
+        doThrow(new BadRequestException("Invalid Nivel value"))
+                .when(validationUtil).requireValidEnum(UserNivel.class, createUserDTO.getNivel(), "Invalid Nivel value");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> userService.createUser(createUserDTO));
-        assertEquals("Nivel is required", exception.getMessage());
+        assertEquals("Invalid Nivel value", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -123,7 +125,7 @@ class UserServiceImplTest {
     void testCreateUser_shouldThrowBadRequestException_whenPasswordIsNullOrEmpty() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
-        createUserDTO.setNivel("admin");
+        createUserDTO.setNivel("ADMIN");
         createUserDTO.setPassword(null);
 
         doThrow(new BadRequestException("Password is required"))
@@ -138,7 +140,7 @@ class UserServiceImplTest {
     void testCreateUser_shouldThrowBadRequestException_whenUsernameAlreadyExists() {
         CreateUserDTO createUserDTO = new CreateUserDTO();
         createUserDTO.setUsername("testuser");
-        createUserDTO.setNivel("admin");
+        createUserDTO.setNivel("ADMIN");
         createUserDTO.setPassword("password");
 
         User existingUser = new User();
@@ -155,10 +157,10 @@ class UserServiceImplTest {
     @Test
     void testUpdateUser_Success() {
         Long userId = 1L;
-        User existingUser = new User(userId, "old_username", "old_nivel", "old_password");
+        User existingUser = new User(userId, "old_username", UserNivel.ADMIN, "old_password");
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
         updateUserDTO.setUsername("new_username");
-        updateUserDTO.setNivel("new_nivel");
+        updateUserDTO.setNivel("USER");
         updateUserDTO.setPassword("new_password");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
@@ -168,7 +170,7 @@ class UserServiceImplTest {
         UserDTO updatedUser = userService.updateUser(userId, updateUserDTO);
 
         assertEquals("new_username", updatedUser.getUsername());
-        assertEquals("new_nivel", updatedUser.getNivel());
+        assertEquals(UserNivel.USER.name(), updatedUser.getNivel());
 
         verify(userRepository).findById(userId);
         verify(passwordEncryptionUtil).encryptPassword("new_password");
@@ -179,6 +181,7 @@ class UserServiceImplTest {
     void testUpdateUser_shouldThrowNotFoundException_UserNotFound() {
         Long userId = 1L;
         UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+        updateUserDTO.setNivel("ADMIN");
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 

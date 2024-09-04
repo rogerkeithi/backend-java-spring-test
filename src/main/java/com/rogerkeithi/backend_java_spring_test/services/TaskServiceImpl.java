@@ -104,6 +104,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public TaskDTO createTask(CreateTaskDTO createTaskDTO){
+        String taskStatus = createTaskDTO.getStatus().toUpperCase();
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         validationUtil.requireStringNonEmpty(createTaskDTO.getTitle(), "Title is required");
@@ -118,7 +119,7 @@ public class TaskServiceImpl implements ITaskService {
         task.setDescription(createTaskDTO.getDescription());
         task.setDueDate(createTaskDTO.getDueDate());
         task.setCreatedAt(currentDateTime);
-        task.setStatus(TaskStatus.valueOf(createTaskDTO.getStatus()));
+        task.setStatus(TaskStatus.valueOf(taskStatus));
         task.set_user(userFound);
 
         taskRepository.save(task);
@@ -128,6 +129,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public TaskDTO updateTask(Long id, UpdateTaskDTO updateTaskDTO) {
+        String taskStatus = updateTaskDTO.getStatus().toUpperCase();
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Task not found"));
 
@@ -141,8 +143,8 @@ public class TaskServiceImpl implements ITaskService {
             task.setDueDate(updateTaskDTO.getDueDate());
         }
         if(updateTaskDTO.getStatus() != null && !updateTaskDTO.getStatus().trim().isEmpty()) {
-            validationUtil.requireValidEnum(TaskStatus.class, updateTaskDTO.getStatus(),"Invalid status value");
-            task.setStatus(TaskStatus.valueOf(updateTaskDTO.getStatus()));
+            validationUtil.requireValidEnum(TaskStatus.class, taskStatus,"Invalid status value");
+            task.setStatus(TaskStatus.valueOf(taskStatus));
         }
         if(updateTaskDTO.getUser_id() != null && updateTaskDTO.getUser_id() > 0) {
             User userFound = userRepository.findById(updateTaskDTO.getUser_id())
