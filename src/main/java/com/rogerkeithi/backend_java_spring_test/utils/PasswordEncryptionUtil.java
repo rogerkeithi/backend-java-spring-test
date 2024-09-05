@@ -17,4 +17,8 @@ public class PasswordEncryptionUtil {
     public String encryptPassword(String plainPassword) {
         return passwordEncoder.encode(plainPassword);
     }
+
+    public boolean matchesPassword(String plainPassword, String encodedPassword) {
+        return passwordEncoder.matches(plainPassword, encodedPassword);
+    }
 }

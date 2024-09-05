@@ -4,8 +4,8 @@ import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.CreateUserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UserDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.UserDTO.UpdateUserDTO;
-import com.rogerkeithi.backend_java_spring_test.services.interfaces.ITaskService;
-import com.rogerkeithi.backend_java_spring_test.services.interfaces.IUserService;
+import com.rogerkeithi.backend_java_spring_test.services.TaskServiceImpl;
+import com.rogerkeithi.backend_java_spring_test.services.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://127.0.0.1:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final IUserService userService;
-    private final ITaskService taskService;
+    private final UserServiceImpl userService;
+    private final TaskServiceImpl taskService;
 
     @Autowired
-    public UserController(IUserService userService, ITaskService taskService) {
+    public UserController(UserServiceImpl userService, TaskServiceImpl taskService) {
         this.userService = userService;
         this.taskService = taskService;
     }

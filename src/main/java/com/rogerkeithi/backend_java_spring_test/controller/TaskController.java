@@ -3,7 +3,7 @@ package com.rogerkeithi.backend_java_spring_test.controller;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.CreateTaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.TaskDTO;
 import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.UpdateTaskDTO;
-import com.rogerkeithi.backend_java_spring_test.services.interfaces.ITaskService;
+import com.rogerkeithi.backend_java_spring_test.services.TaskServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://127.0.0.1:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
-    private final ITaskService taskService;
+    private final TaskServiceImpl taskService;
 
     @Autowired
-    public TaskController(ITaskService taskService) {
+    public TaskController(TaskServiceImpl taskService) {
         this.taskService = taskService;
     }
 
