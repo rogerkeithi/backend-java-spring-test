@@ -51,13 +51,15 @@ public class TaskServiceImplTest {
 
     @Test
     void testGetSelfUserTasks_Success() {
-        String username = "testUser";
+        String username = "testuser";
         String sort = "dueDate";
         String status = "CONCLUIDA";
-        User mockedUser = new User(1L, "testuser1", UserNivel.ADMIN, "123");
+        String userId = "1";
+        User mockedUser = new User(1L, "testuser", UserNivel.ADMIN, "123");
         LocalDateTime mockedDate = LocalDateTime.now();
 
         when(securityUtil.getCurrentUsername()).thenReturn(username);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockedUser));
 
         List<Task> tasks = List.of(
                 new Task(1L, "Task 1", "Description 1", mockedDate, mockedDate, TaskStatus.CONCLUIDA,  mockedUser),
@@ -82,7 +84,7 @@ public class TaskServiceImplTest {
                 ))
                 .collect(Collectors.toList());
 
-        List<TaskDTO> result = taskService.getSelfUserTasks(status, sort);
+        List<TaskDTO> result = taskService.getSelfUserTasks(status, sort, userId);
 
         assertEquals(expected, result);
     }
@@ -100,7 +102,7 @@ public class TaskServiceImplTest {
                 .requireValidEnum(TaskStatus.class, invalidStatus, "Invalid status value");
 
         BadRequestException thrown = assertThrows(BadRequestException.class, () -> {
-            taskService.getSelfUserTasks(invalidStatus, sort);
+            taskService.getSelfUserTasks(invalidStatus, sort, null);
         });
 
         assertEquals("Invalid status value", thrown.getMessage());
@@ -117,7 +119,7 @@ public class TaskServiceImplTest {
         doNothing().when(validationUtil).requireValidEnum(TaskStatus.class, status, "Invalid status value");
 
         BadRequestException thrown = assertThrows(BadRequestException.class, () -> {
-            taskService.getSelfUserTasks(status, sort);
+            taskService.getSelfUserTasks(status, sort, null);
         });
 
         assertEquals("Invalid sort type", thrown.getMessage());

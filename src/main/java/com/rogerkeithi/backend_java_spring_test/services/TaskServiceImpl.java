@@ -39,8 +39,15 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public List<TaskDTO> getSelfUserTasks(String status, String sort) {
+    public List<TaskDTO> getSelfUserTasks(String status, String sort, String userId) {
         String username = securityUtil.getCurrentUsername();
+
+        if (userId != null) {
+            Long userIdLong = Long.parseLong(userId);
+            Optional<User> userFound = Optional.of(userRepository.findById(userIdLong).orElseThrow(() -> new NotFoundException("User not found")));
+            username = userFound.get().getUsername();
+        }
+
         List<Task> tasks = taskRepository.findAllByUsername(username);
 
         Stream<Task> taskStream = tasks.stream();

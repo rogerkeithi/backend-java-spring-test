@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://127.0.0.1:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -30,10 +29,11 @@ public class TaskController {
     )
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getUserTasks(
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String sort
     ) {
-        List<TaskDTO> tasks = taskService.getSelfUserTasks(status, sort);
+        List<TaskDTO> tasks = taskService.getSelfUserTasks(status, sort, userId);
         return ResponseEntity.ok(tasks);
     }
 

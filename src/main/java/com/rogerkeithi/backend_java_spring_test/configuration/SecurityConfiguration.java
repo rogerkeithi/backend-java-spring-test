@@ -36,10 +36,12 @@ public class SecurityConfiguration {
                                 antMatcher("/v3/**"),
                                 antMatcher("/h2-console/**"))
                         .authenticated()
+                        .requestMatchers("/api/users").permitAll()
+                        .requestMatchers("/api/tasks/**").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).cors(Customizer.withDefaults());
 
         return http.build();
     }

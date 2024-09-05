@@ -7,7 +7,7 @@ import com.rogerkeithi.backend_java_spring_test.DTO.TaskDTO.UpdateTaskDTO;
 import java.util.List;
 
 public interface ITaskService {
-    List<TaskDTO> getSelfUserTasks(String status, String sort);
+    List<TaskDTO> getSelfUserTasks(String status, String sort, String userId);
     List<TaskDTO> getAllUserTasks(Long userId);
     void deleteTask(Long id);
     TaskDTO createTask(CreateTaskDTO createTaskDTO);
