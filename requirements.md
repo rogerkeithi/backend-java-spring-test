@@ -65,7 +65,7 @@
    - ✅ **Comentários no Código**: O código inclui comentários úteis que explicam partes complexas ou importantes da implementação?
 
 5. **FrontEnd**: 
-   - 🚩 **Diferencial (Opcional)**: Embora a aplicação frontend não seja obrigatória, será considerada um diferencial. Se desenvolvida, será avaliada pela qualidade e integração com o backend. Isso inclui:
+   - ✅ **Diferencial (Opcional)**: Embora a aplicação frontend não seja obrigatória, será considerada um diferencial. Se desenvolvida, será avaliada pela qualidade e integração com o backend. Isso inclui:
      - **Funcionalidade**: A aplicação frontend implementa as funcionalidades básicas (visualização, criação, edição e exclusão de tarefas)?
      - **UX/UI**: A interface é intuitiva e de fácil uso?
      - **Integração**: A integração com o backend é feita de forma eficiente e segura?
